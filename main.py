@@ -4,6 +4,7 @@ Groupe: 401
 Description: Jeu roche papier ciseau
 """
 import arcade
+import random
 from game_state import GameState
 
 
@@ -15,6 +16,7 @@ class MyGame(arcade.Window):
     def __init__(self, longueur, largeur, titre):
         super().__init__(longueur, largeur, titre)
         arcade.set_background_color(arcade.color.SKY_BLUE)
+        self.game_state = GameState.NOT_STARTED
         self.joueur = arcade.Sprite("assets/faceBeard.png", 0.25, 250, 350)
         self.ordinateur = arcade.Sprite("assets/compy.png", 1.25, 750, 350)
         self.joueurs_list = arcade.SpriteList()
@@ -34,40 +36,54 @@ class MyGame(arcade.Window):
         self.ciseau_list.append(self.ciseau)
 
         self.joueur_score = 0
+        self.ordinateur_score = 0
         x = 2000
         y = 2000
         a = 2000
         b = 2000
-        self.winning_text = (arcade.Text("Le joueur a gagner!", x, y, arcade.color.BLACK))
-        self.losing_text = (arcade.Text("L'ordinateur a gagner!", a, b, arcade.color.BLACK))
+        self.winning_text = arcade.Text("Le joueur a gagner!", x, y, arcade.color.BLACK)
+        self.losing_text = arcade.Text("L'ordinateur a gagner!", a, b, arcade.color.BLACK)
+        dictionnaire = {
+            0: "roche",
+            1: "papier",
+            2: "ciseau"
+        }
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-        nb_points = 0
-        if nb_points < 3:
-            self.game_state = GameState.ROUND_ACTIVE
-            if button == arcade. MOUSE_BUTTON_LEFT:
-                self.game_state = GameState.ROUND_DONE
+
+        if self.game_state == GameState.ROUND_ACTIVE:
+            if self.roche.collides_with_point((x, y)):
+                self.player_attack = 0
+            elif self.papier.collides_with_point((x, y)):
+                self.player_attack = 1
+            elif self.ciseau.collides_with_point((x, y)):
+                self.player_attack = 2
 
     def on_key_press(self, symbol: int, modifiers: int):
-        nb_points = 0
-        if nb_points < 3:
-            self.game_state = GameState.NOT_STARTED
-            if symbol == arcade.key.SPACE:
-                self.game_state = GameState.ROUND_ACTIVE
-                if symbol == arcade.key.SPACE:
-                    self.game_state = GameState.ROUND_ACTIVE
-
-        else:
-            self.game_state = GameState.GAME_OVER
-            if self.joueur_score == 3:
-                x = 300
-                y = 600
-            else:
-                a = 300
-                b = 600
+        if self.game_state == GameState.ROUND_ACTIVE:
+            self.choix_ordinateur = random.choice[self.roche, self.papier, self.ciseau]
 
     def on_update(self, delta_time: float):
-        pass
+        if self.game_state == GameState.ROUND_ACTIVE: # et que l'usager a cliquÉ sur un sprite
+            if self.choix_ordinateur == self.roche and self.player_attack == 0:
+                pass
+            elif self.choix_ordinateur == self.roche and self.player_attack == 1:
+                self.joueur_score = + 1
+            elif self.choix_ordinateur == self.roche and self.player_attack == 2:
+                self.ordinateur_score = + 1
+            elif self.choix_ordinateur == self.papier and self.player_attack == 0:
+                self.ordinateur_score = + 1
+            elif self.choix_ordinateur == self.papier and self.player_attack == 1:
+                pass
+            elif self.choix_ordinateur == self.papier and self.player_attack == 2:
+                self.joueur_score = + 1
+            elif self.choix_ordinateur == self.ciseau and self.player_attack == 0:
+                self.joueur_score = + 1
+            elif self.choix_ordinateur == self.ciseau and self.player_attack == 1:
+                self.ordinateur_score = + 1
+            elif self.choix_ordinateur == self.ciseau and self.player_attack == 2:
+                pass
+            # faire la logique
 
     def on_draw(self):
         self.clear()
@@ -76,8 +92,17 @@ class MyGame(arcade.Window):
         self.roche_list.draw()
         self.papier_list.draw()
         self.ciseau_list.draw()
-        self.winning_text.draw()
-        self.losing_text.draw()
+
+        if self.game_state == GameState.NOT_STARTED:
+            pass
+        elif self.game_state == GameState.ROUND_ACTIVE:
+            pass
+        elif self.game_state == GameState.ROUND_DONE:
+            pass
+        elif self.game_state == GameState.GAME_OVER:
+            self.winning_text.draw()
+            self.losing_text.draw()
+
         titre = arcade.Text("Roche Papier Ciseau", 75, 900, arcade.color.BLACK, 80)
         sous_titre = arcade.Text("Appuyer sur un icone pour jouer", 75, 810, arcade.color.BLACK, 50)
         pointage_joueur = arcade.Text("Points du joueur:", 75, 100, arcade.color.BLACK, 30)
