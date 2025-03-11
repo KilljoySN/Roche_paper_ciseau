@@ -16,6 +16,7 @@ class MyGame(arcade.Window):
     def __init__(self, longueur, largeur, titre):
         super().__init__(longueur, largeur, titre)
         arcade.set_background_color(arcade.color.SKY_BLUE)
+        self.player_attack = None
         self.game_state = GameState.NOT_STARTED
         self.joueur = arcade.Sprite("assets/faceBeard.png", 0.25, 250, 350)
         self.ordinateur = arcade.Sprite("assets/compy.png", 1.25, 750, 350)
@@ -37,33 +38,26 @@ class MyGame(arcade.Window):
 
         self.joueur_score = 0
         self.ordinateur_score = 0
-        x = 2000
-        y = 2000
-        a = 2000
-        b = 2000
-        self.winning_text = arcade.Text("Le joueur a gagner!", x, y, arcade.color.BLACK)
-        self.losing_text = arcade.Text("L'ordinateur a gagner!", a, b, arcade.color.BLACK)
-        dictionnaire = {
-            0: "roche",
-            1: "papier",
-            2: "ciseau"
-        }
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
-
         if self.game_state == GameState.ROUND_ACTIVE:
             if self.roche.collides_with_point((x, y)):
                 self.player_attack = 0
+                print("roche")
             elif self.papier.collides_with_point((x, y)):
                 self.player_attack = 1
+                print("papier")
             elif self.ciseau.collides_with_point((x, y)):
                 self.player_attack = 2
+                print("ciseau")
 
     def on_key_press(self, symbol: int, modifiers: int):
-        if self.game_state == GameState.ROUND_ACTIVE:
-            self.choix_ordinateur = random.choice[self.roche, self.papier, self.ciseau]
+        if self.game_state == GameState.NOT_STARTED:
+            if symbol == arcade.key.SPACE:
+                self.game_state = GameState.ROUND_ACTIVE
 
     def on_update(self, delta_time: float):
+        self.choix_ordinateur = random.choice([self.roche, self.papier, self.ciseau])
         if self.game_state == GameState.ROUND_ACTIVE: # et que l'usager a cliquÉ sur un sprite
             if self.choix_ordinateur == self.roche and self.player_attack == 0:
                 pass
@@ -83,6 +77,10 @@ class MyGame(arcade.Window):
                 self.ordinateur_score = + 1
             elif self.choix_ordinateur == self.ciseau and self.player_attack == 2:
                 pass
+        elif self.joueur_score == 3:
+            self.winning_text = arcade.Text("Le joueur a gagner!", 100, 700, arcade.color.BLACK)
+        elif self.ordinateur_score == 3:
+            self.losing_text = arcade.Text("L'ordinateur a gagner!", 100, 700, arcade.color.BLACK)
             # faire la logique
 
     def on_draw(self):
@@ -93,22 +91,18 @@ class MyGame(arcade.Window):
         self.papier_list.draw()
         self.ciseau_list.draw()
 
-        if self.game_state == GameState.NOT_STARTED:
-            pass
-        elif self.game_state == GameState.ROUND_ACTIVE:
-            pass
-        elif self.game_state == GameState.ROUND_DONE:
-            pass
-        elif self.game_state == GameState.GAME_OVER:
+        if self.game_state == GameState.GAME_OVER:
             self.winning_text.draw()
             self.losing_text.draw()
 
         titre = arcade.Text("Roche Papier Ciseau", 75, 900, arcade.color.BLACK, 80)
-        sous_titre = arcade.Text("Appuyer sur un icone pour jouer", 75, 810, arcade.color.BLACK, 50)
-        pointage_joueur = arcade.Text("Points du joueur:", 75, 100, arcade.color.BLACK, 30)
-        pointage_ordinateur = arcade.Text("Points de l'ordinateur:", 550, 100, arcade.color.BLACK, 30)
+        if self.game_state == GameState.NOT_STARTED:
+            sous_titre = arcade.Text("Appuyer sur un icone pour jouer", 75, 810, arcade.color.BLACK, 50)
+            sous_titre.draw()
+        pointage_joueur = arcade.Text(f"Points du joueur: {self.joueur_score}", 75, 100, arcade.color.BLACK, 30)
+        pointage_ordinateur = arcade.Text(f"Points de l'ordinateur: {self.ordinateur_score}", 550, 100, arcade.color.BLACK, 30)
         titre.draw()
-        sous_titre.draw()
+
         pointage_joueur.draw()
         pointage_ordinateur.draw()
 
