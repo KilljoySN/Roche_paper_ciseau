@@ -3,6 +3,8 @@ Nom: Kaize
 Groupe: 401
 Description: Jeu roche papier ciseau
 """
+import turtle
+
 import arcade
 import random
 from game_state import GameState
@@ -25,17 +27,17 @@ class MyGame(arcade.Window):
         self.joueurs_list.append(self.joueur)
         self.joueurs_list.append(self.ordinateur)
 
-        self.roche = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
+        self.rock = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
         self.roche_list = arcade.SpriteList()
-        self.roche_list.append(self.roche)
+        self.roche_list.append(self.rock)
 
-        self.papier = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
+        self.paper = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
         self.papier_list = arcade.SpriteList()
-        self.papier_list.append(self.papier)
+        self.papier_list.append(self.paper)
 
-        self.ciseau = arcade.Sprite("assets/scissors.png", 0.75, 370, 235)
+        self.cissors = arcade.Sprite("assets/scissors.png", 0.75, 370, 235)
         self.ciseau_list = arcade.SpriteList()
-        self.ciseau_list.append(self.ciseau)
+        self.ciseau_list.append(self.cissors)
 
         self.joueur_score = 0
         self.ordinateur_score = 0
@@ -43,16 +45,15 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if self.game_state == GameState.ROUND_ACTIVE:
             print("Round active")
-            if self.roche.collides_with_point((x, y)):
+            if self.rock.collides_with_point((x, y)):
                 self.player_attack = 0
                 print("roche")
-            elif self.papier.collides_with_point((x, y)):
+            elif self.paper.collides_with_point((x, y)):
                 self.player_attack = 1
                 print("papier")
-            elif self.ciseau.collides_with_point((x, y)):
+            elif self.cissors.collides_with_point((x, y)):
                 self.player_attack = 2
                 print("ciseau")
-            self.game_state = GameState.ROUND_DONE
 
     def on_key_press(self, symbol: int, modifiers: int):
         if self.game_state == GameState.NOT_STARTED:
@@ -71,32 +72,55 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         if self.game_state == GameState.ROUND_ACTIVE and self.player_attack in [0, 1, 2]:
             print(f"round active and player attack = {self.player_attack}")
-            self.choix_ordinateur = random.choice([self.roche, self.papier, self.ciseau])
-            if self.choix_ordinateur == self.roche and self.player_attack == 0:
+            self.choix_ordinateur = random.choice([self.rock, self.paper, self.cissors])
+
+            if self.choix_ordinateur == self.rock:
+                print("ordinateur: rock")
+                self.rock = arcade.Sprite("assets/srock.png", 0.85, 760, 245)
+                self.roche_list.append(self.rock)
+
+            elif self.choix_ordinateur == self.paper:
+                print("ordinateur: paper")
+                self.paper = arcade.Sprite("assets/spaper.png", 0.85, 760, 233)
+                self.papier_list.append(self.paper)
+
+            elif self.choix_ordinateur == self.cissors:
+                print("ordinateur: cissors")
+                self.cissors = arcade.Sprite("assets/scissors.png", 0.75, 750, 235)
+                self.ciseau_list.append(self.cissors)
+
+            if self.choix_ordinateur == self.rock and self.player_attack == 0:
                 pass
-            elif self.choix_ordinateur == self.roche and self.player_attack == 1:
-                self.joueur_score = + 1
-            elif self.choix_ordinateur == self.roche and self.player_attack == 2:
-                self.ordinateur_score = + 1
-            elif self.choix_ordinateur == self.papier and self.player_attack == 0:
-                self.ordinateur_score = + 1
-            elif self.choix_ordinateur == self.papier and self.player_attack == 1:
-                pass
-            elif self.choix_ordinateur == self.papier and self.player_attack == 2:
-                self.joueur_score = + 1
-            elif self.choix_ordinateur == self.ciseau and self.player_attack == 0:
-                self.joueur_score = + 1
-            elif self.choix_ordinateur == self.ciseau and self.player_attack == 1:
-                self.ordinateur_score = + 1
-            elif self.choix_ordinateur == self.ciseau and self.player_attack == 2:
-                pass
+                print("tie")
+            elif self.choix_ordinateur == self.rock and self.player_attack == 1:
+                self.joueur_score += 1
+                print("loss")
+            elif self.choix_ordinateur == self.rock and self.player_attack == 2:
+                self.ordinateur_score += 1
+                print("win")
+            elif self.choix_ordinateur == self.paper and self.player_attack == 0:
+                self.ordinateur_score += 1
+                print("win")
+            elif self.choix_ordinateur == self.paper and self.player_attack == 1:
+                print("tie")
+            elif self.choix_ordinateur == self.paper and self.player_attack == 2:
+                self.joueur_score += 1
+                print("loss")
+            elif self.choix_ordinateur == self.cissors and self.player_attack == 0:
+                self.joueur_score += 1
+                print("")
+            elif self.choix_ordinateur == self.cissors and self.player_attack == 1:
+                self.ordinateur_score += 1
+                print("")
+            elif self.choix_ordinateur == self.cissors and self.player_attack == 2:
+                print("tie")
             self.game_state = GameState.ROUND_DONE
             print("round done")
             if self.joueur_score == 3:
-                self.winning_text = arcade.Text("Le joueur a gagner!", 100, 700, arcade.color.BLACK)
+                self.winning_text = arcade.Text("Le joueur a gagner!", 75, 810, arcade.color.BLACK, 50)
                 self.game_state = GameState.GAME_OVER
             elif self.ordinateur_score == 3:
-                self.winning_text = arcade.Text("L'ordinateur a gagner!", 100, 700, arcade.color.BLACK)
+                self.winning_text = arcade.Text("L'ordinateur a gagner!", 75, 810, arcade.color.BLACK, 50)
                 self.game_state = GameState.GAME_OVER
 
     def on_draw(self):
@@ -116,8 +140,10 @@ class MyGame(arcade.Window):
         if self.game_state == GameState.ROUND_ACTIVE:
             sous_titre = arcade.Text("Le jeu commence!", 75, 810, arcade.color.BLACK, 50)
             sous_titre.draw()
-        pointage_joueur = arcade.Text(f"Points du joueur: {self.joueur_score}", 75, 100, arcade.color.BLACK, 30)
-        pointage_ordinateur = arcade.Text(f"Points de l'ordinateur: {self.ordinateur_score}", 550, 100, arcade.color.BLACK, 30)
+
+        pointage_joueur = arcade.Text(f"Points du joueur: {self.joueur_score}", 75,  100, arcade.color.BLACK, 30)
+        pointage_ordinateur = \
+            (arcade.Text(f"Points de l'ordinateur: {self.ordinateur_score}", 550, 100, arcade.color.BLACK, 30))
         titre.draw()
         pointage_joueur.draw()
         pointage_ordinateur.draw()
