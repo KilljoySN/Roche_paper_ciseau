@@ -32,17 +32,29 @@ class MyGame(arcade.Window):
         self.joueurs_list.append(self.joueur)
         self.joueurs_list.append(self.ordinateur)
 
-        self.rock = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
+        self.rock_joueur = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
         self.roche_list = arcade.SpriteList()
-        self.roche_list.append(self.rock)
+        self.roche_list.append(self.rock_joueur)
 
-        self.paper = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
+        self.paper_joueur = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
         self.papier_list = arcade.SpriteList()
-        self.papier_list.append(self.paper)
+        self.papier_list.append(self.paper_joueur)
 
-        self.cissors = arcade.Sprite("assets/scissors.png", 0.75, 370, 235)
+        self.cissors_joueur = arcade.Sprite("assets/scissors.png", 0.75, 369, 235)
         self.ciseau_list = arcade.SpriteList()
-        self.ciseau_list.append(self.cissors)
+        self.ciseau_list.append(self.cissors_joueur)
+
+        self.rock_pc = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
+        self.roche_list = arcade.SpriteList()
+        self.roche_list.append(self.rock_pc)
+
+        self.paper_pc = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
+        self.papier_list = arcade.SpriteList()
+        self.papier_list.append(self.paper_pc)
+
+        self.cissors_pc = arcade.Sprite("assets/scissors.png", 0.75, 369, 235)
+        self.ciseau_list = arcade.SpriteList()
+        self.ciseau_list.append(self.cissors_pc)
 
         self.joueur_score = 0
         self.ordinateur_score = 0
@@ -50,13 +62,13 @@ class MyGame(arcade.Window):
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if self.game_state == GameState.ROUND_ACTIVE:
             print(f"On_mouse_press {self.game_state}")
-            if self.rock.collides_with_point((x, y)):
+            if self.rock_joueur.collides_with_point((x, y)):
                 self.player_attack = 0
                 print("joueur: roche")
-            elif self.paper.collides_with_point((x, y)):
+            elif self.paper_joueur.collides_with_point((x, y)):
                 self.player_attack = 1
                 print("joueur: papier")
-            elif self.cissors.collides_with_point((x, y)):
+            elif self.cissors_joueur.collides_with_point((x, y)):
                 self.player_attack = 2
                 print("joueur: ciseau")
 
@@ -74,6 +86,11 @@ class MyGame(arcade.Window):
                 print("round active")
                 self.choix_ordinateur = None
                 self.player_attack = -1
+        if self.game_state == GameState.GAME_OVER:
+            if symbol == arcade.key.SPACE:
+                self.game_state = GameState.NOT_STARTED
+                self.ordinateur_score = 0
+                self.joueur_score = 0
 
     def on_update(self, delta_time: float):
         self.titre = arcade.Text("Roche Papier Ciseau", 75, 900, arcade.color.GOLD, 80)
@@ -87,20 +104,26 @@ class MyGame(arcade.Window):
         if self.game_state == GameState.ROUND_ACTIVE and self.player_attack in [0, 1, 2]:
             self.choix_ordinateur = random.randint(0, 2)
 
-            if self.choix_ordinateur == 0:
+            """if self.choix_ordinateur == 0:
                 print("ordinateur: rock")
-                self.rock.center_x = 760        # a rcade.Sprite("assets/srock.png", 0.85, 760, 245)
-                self.rock.center_y = 245
+                self.rock_pc.center_x = 760        # a rcade.Sprite("assets/srock.png", 0.85, 760, 245)
+                self.rock_pc.center_y = 245
+                #if self.game_state == GameState.ROUND_DONE:
+                    #self.roche_list.remove(self.rock)
 
             elif self.choix_ordinateur == 1:
                 print("ordinateur: paper")
-                self.paper.center_x = 760
-                self.paper.center_y = 233  # = arcade.Sprite("assets/spaper.png", 0.85, 760, 233)
+                self.paper_pc.center_x = 760
+                self.paper_pc.center_y = 233  # = arcade.Sprite("assets/spaper.png", 0.85, 760, 233)
+                #if self.game_state == GameState.ROUND_DONE:
+                    #self.papier_list.remove(self.paper)
 
             elif self.choix_ordinateur == 2:
                 print("ordinateur: cissors")
-                self.cissors.center_x = 750
-                self.cissors.center_y = 235        # = arcade.Sprite("assets/scissors.png", 0.75, 750, 235)
+                self.cissors_pc.center_x = 750
+                self.cissors_pc.center_y = 235        # = arcade.Sprite("assets/scissors.png", 0.75, 750, 235)
+                #if self.game_state == GameState.ROUND_DONE:
+                    #self.ciseau_list.remove(self.cissors)"""
 
             if self.choix_ordinateur == 0 and self.player_attack == 0:
                 pass
@@ -167,31 +190,39 @@ class MyGame(arcade.Window):
         if self.game_state == GameState.ROUND_DONE:
             # changer position sprite choix ordi et afficher.
             if self.choix_ordinateur == 0:
-                self.rock.center_x = 760
-                self.rock.center_y = 245
+                self.rock_pc.center_x = 760
+                self.rock_pc.center_y = 245
                 self.roche_list.draw()
+
             elif self.choix_ordinateur == 1:
-                self.paper.center_x = 760
-                self.paper.center_x = 245
+                self.paper_pc.center_x = 760
+                self.paper_pc.center_x = 245
                 self.papier_list.draw()
+
             elif self.choix_ordinateur == 2:
-                self.paper.center_x = 750
-                self.paper.center_x = 245
+                self.paper_pc.center_x = 750
+                self.paper_pc.center_x = 245
                 self.papier_list.draw()
 
             # changer position sprite choix joueur et afficher
             if self.player_attack == 0:
-                self.rock.center_x = 140
-                self.rock.center_y = 245
+                self.rock_joueur.center_x = 140
+                self.rock_joueur.center_y = 245
                 self.roche_list.draw()
+                if self.rock_joueur in self.roche_list:
+                    self.roche_list.remove(self.rock_joueur)
             elif self.player_attack == 1:
-                self.rock.center_x = 260
-                self.rock.center_y = 235
+                self.paper_joueur.center_x = 260
+                self.paper_joueur.center_y = 235
                 self.papier_list.draw()
+                if self.paper_joueur in self.papier_list:
+                    self.papier_list.remove(self.paper_joueur)
             elif self.player_attack == 2:
-                self.rock.center_x = 370
-                self.rock.center_y = 235
+                self.cissors_joueur.center_x = 369
+                self.cissors_joueur.center_y = 235
                 self.ciseau_list.draw()
+                if self.cissors_joueur in self.ciseau_list:
+                    self.ciseau_list.remove(self.cissors_joueur)
 
         self.pointage_joueur.draw()
         self.pointage_ordinateur.draw()
