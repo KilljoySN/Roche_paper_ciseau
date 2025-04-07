@@ -4,9 +4,10 @@ Groupe: 401
 Description: Jeu roche papier ciseau
 """
 
+import arcade
 import random
 from game_state import GameState
-from attack_animation import *
+from attack_animation import AttackAnimation, AttackType
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 
