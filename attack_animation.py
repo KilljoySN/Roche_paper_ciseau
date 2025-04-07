@@ -8,7 +8,7 @@ class AttackType(Enum):
     SCISSORS = 2
 
 
-class AttackAnimation(arcade.sprite):
+class AttackAnimation(arcade.Sprite):
     ATTACK_SCALE = 0.50
     ANIMATION_SPEED = 5.0
 
@@ -33,7 +33,7 @@ class AttackAnimation(arcade.sprite):
                 arcade.load_texture("assets/spaper-attack.png")
                 ]
 
-            self.scale = self.Attack_Scale
+            self.scale = self.ATTACK_SCALE
             self.current_texture = 0
             self.set_texture(self.current_texture)
 
