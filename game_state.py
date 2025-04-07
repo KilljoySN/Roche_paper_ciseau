@@ -1,9 +1,3 @@
-"""if state == STATE_PAUSED:
-    draw_paused_screen()
-elsif state == STATE_PLAYING:
-    draw_playing_stuff()
-elsif state == STATE_GAMEOVER:
-    you_get_the_idea()"""
 
 from enum import Enum
 

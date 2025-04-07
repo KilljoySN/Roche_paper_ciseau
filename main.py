@@ -4,11 +4,9 @@ Groupe: 401
 Description: Jeu roche papier ciseau
 """
 
-import arcade
 import random
 from game_state import GameState
-
-
+from attack_animation import *
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 1000
 
@@ -32,27 +30,27 @@ class MyGame(arcade.Window):
         self.joueurs_list.append(self.joueur)
         self.joueurs_list.append(self.ordinateur)
 
-        self.rock_joueur = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
+        self.rock_joueur = AttackAnimation(AttackType.ROCK)
         self.roche_list = arcade.SpriteList()
         self.roche_list.append(self.rock_joueur)
 
-        self.paper_joueur = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
+        self.paper_joueur = AttackAnimation(AttackType.PAPER)
         self.papier_list = arcade.SpriteList()
         self.papier_list.append(self.paper_joueur)
 
-        self.cissors_joueur = arcade.Sprite("assets/scissors.png", 0.75, 369, 235)
+        self.cissors_joueur = AttackAnimation(AttackType.SCISSORS)
         self.ciseau_list = arcade.SpriteList()
         self.ciseau_list.append(self.cissors_joueur)
 
-        self.rock_pc = arcade.Sprite("assets/srock.png", 0.85, 140, 245)
+        self.rock_pc = AttackAnimation(AttackType.ROCK)
         self.roche_list = arcade.SpriteList()
         self.roche_list.append(self.rock_pc)
 
-        self.paper_pc = arcade.Sprite("assets/spaper.png", 0.85, 260, 235)
+        self.paper_pc = AttackAnimation(AttackType.PAPER)
         self.papier_list = arcade.SpriteList()
         self.papier_list.append(self.paper_pc)
 
-        self.cissors_pc = arcade.Sprite("assets/scissors.png", 0.75, 369, 235)
+        self.cissors_pc = AttackAnimation(AttackType.SCISSORS)
         self.ciseau_list = arcade.SpriteList()
         self.ciseau_list.append(self.cissors_pc)
 
