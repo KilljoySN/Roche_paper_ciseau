@@ -9,13 +9,13 @@ class AttackType(Enum):
 
 
 class AttackAnimation(arcade.sprite):
-    ATTACK_SCALE = 0.5
-    ANIMATION_SPEED = 5
+    ATTACK_SCALE = 0.50
+    ANIMATION_SPEED = 5.0
 
     def __init__(self, attack_type):
         super().__init__()
-        self.animation_update_time = 1 / AttackAnimation.ANIMATION_SPEED
-        self.time_since_last_swap = 0
+        self.animation_update_time = 1.0 / AttackAnimation.ANIMATION_SPEED
+        self.time_since_last_swap = 0.0
         self.attack_type = attack_type
         if self.attack_type == AttackType.ROCK:
             self.textures = [
@@ -46,3 +46,4 @@ class AttackAnimation(arcade.sprite):
             else:
                 self.current_texture = 0
                 self.set_texture(self.current_texture)
+            self.time_since_last_swap = 0.0
