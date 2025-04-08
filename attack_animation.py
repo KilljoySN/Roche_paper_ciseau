@@ -29,8 +29,8 @@ class AttackAnimation(arcade.Sprite):
             ]
         else:
             self.textures = [
-                arcade.load_texture("assets/spaper.png"),
-                arcade.load_texture("assets/spaper-attack.png")
+                arcade.load_texture("assets/scissors.png"),
+                arcade.load_texture("assets/scissors-close.png")
                 ]
 
             self.scale = self.ATTACK_SCALE

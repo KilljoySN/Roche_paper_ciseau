@@ -32,28 +32,34 @@ class MyGame(arcade.Window):
         self.joueurs_list.append(self.ordinateur)
 
         self.rock_joueur = AttackAnimation(AttackType.ROCK)
+        self.rock_joueur.center_x = 140
+        self.rock_joueur.center_y = 245
         self.roche_list = arcade.SpriteList()
         self.roche_list.append(self.rock_joueur)
 
         self.paper_joueur = AttackAnimation(AttackType.PAPER)
+        self.paper_joueur.center_x = 260
+        self.paper_joueur.center_y = 235
         self.papier_list = arcade.SpriteList()
         self.papier_list.append(self.paper_joueur)
 
         self.cissors_joueur = AttackAnimation(AttackType.SCISSORS)
+        self.cissors_joueur.center_x = 369
+        self.cissors_joueur.center_y = 235
         self.ciseau_list = arcade.SpriteList()
         self.ciseau_list.append(self.cissors_joueur)
 
         self.rock_pc = AttackAnimation(AttackType.ROCK)
-        self.roche_list = arcade.SpriteList()
-        self.roche_list.append(self.rock_pc)
+        self.pc_roche_list = arcade.SpriteList()
+        self.pc_roche_list.append(self.rock_pc)
 
         self.paper_pc = AttackAnimation(AttackType.PAPER)
-        self.papier_list = arcade.SpriteList()
-        self.papier_list.append(self.paper_pc)
+        self.pc_papier_list = arcade.SpriteList()
+        self.pc_papier_list.append(self.paper_pc)
 
         self.cissors_pc = AttackAnimation(AttackType.SCISSORS)
-        self.ciseau_list = arcade.SpriteList()
-        self.ciseau_list.append(self.cissors_pc)
+        self.pc_ciseau_list = arcade.SpriteList()
+        self.pc_ciseau_list.append(self.cissors_pc)
 
         self.joueur_score = 0
         self.ordinateur_score = 0
@@ -125,7 +131,6 @@ class MyGame(arcade.Window):
                     #self.ciseau_list.remove(self.cissors)"""
 
             if self.choix_ordinateur == 0 and self.player_attack == 0:
-                pass
                 print("tie")
 
             elif self.choix_ordinateur == 0 and self.player_attack == 1:
@@ -141,7 +146,6 @@ class MyGame(arcade.Window):
                 print("loss")
 
             elif self.choix_ordinateur == 1 and self.player_attack == 1:
-                pass
                 print("tie")
 
             elif self.choix_ordinateur == 1 and self.player_attack == 2:
@@ -157,7 +161,6 @@ class MyGame(arcade.Window):
                 print("loss")
 
             elif self.choix_ordinateur == 2 and self.player_attack == 2:
-                pass
                 print("tie")
 
             self.game_state = GameState.ROUND_DONE
@@ -177,31 +180,32 @@ class MyGame(arcade.Window):
         self.clear()
         self.carree()
         self.joueurs_list.draw()
-        self.roche_list.draw()
-        self.papier_list.draw()
-        self.ciseau_list.draw()
+
 
         self.titre.draw()
         if self.game_state == GameState.NOT_STARTED:
             self.sous_titre.draw()
         if self.game_state == GameState.ROUND_ACTIVE:
             self.game_on.draw()
+            self.roche_list.draw()
+            self.papier_list.draw()
+            self.ciseau_list.draw()
         if self.game_state == GameState.ROUND_DONE:
             # changer position sprite choix ordi et afficher.
             if self.choix_ordinateur == 0:
                 self.rock_pc.center_x = 760
                 self.rock_pc.center_y = 245
-                self.roche_list.draw()
+                self.pc_roche_list.draw()
 
             elif self.choix_ordinateur == 1:
                 self.paper_pc.center_x = 760
                 self.paper_pc.center_x = 245
-                self.papier_list.draw()
+                self.pc_papier_list.draw()
 
             elif self.choix_ordinateur == 2:
                 self.paper_pc.center_x = 750
                 self.paper_pc.center_x = 245
-                self.papier_list.draw()
+                self.pc_papier_list.draw()
 
             # changer position sprite choix joueur et afficher
             if self.player_attack == 0:
