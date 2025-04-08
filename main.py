@@ -20,7 +20,10 @@ class MyGame(arcade.Window):
         self.winning_text = None
         self.pointage_joueur = None
         self.pointage_ordinateur = None
-        self.game_on = None
+        self.point_loss = None
+        self.point_won = None
+        self.lead = None
+        self.egale = None
         arcade.set_background_color(arcade.color.ONYX)
         self.player_attack = -1
         self.choix_ordinateur = None
@@ -66,7 +69,6 @@ class MyGame(arcade.Window):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if self.game_state == GameState.ROUND_ACTIVE:
-            print(f"On_mouse_press {self.game_state}")
             if self.rock_joueur.collides_with_point((x, y)):
                 self.player_attack = 0
                 print("joueur: roche")
@@ -78,7 +80,6 @@ class MyGame(arcade.Window):
                 print("joueur: ciseau")
 
     def on_key_press(self, symbol: int, modifiers: int):
-        print(f"On_key_press {self.game_state}")
         if self.game_state == GameState.NOT_STARTED:
             print("round not started")
             if symbol == arcade.key.SPACE:
@@ -100,7 +101,9 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         self.titre = arcade.Text("Roche Papier Ciseau", 75, 900, arcade.color.GOLD, 80)
         self.sous_titre = arcade.Text("Appuyer sur 'ESPACE' pour jouer", 75, 810, arcade.color.GOLD, 50)
-        self.game_on = arcade.Text("Le jeu commence!", 75, 810, arcade.color.GOLD, 50)
+        self.point_loss = arcade.Text("Tu as perdu le point!", 75, 810, arcade.color.RED, 50)
+        self.point_won = arcade.Text("Tu as gagner le point!", 75, 810, arcade.color.GREEN, 50)
+        self.egale = arcade.Text("Égalité!", 75, 810, arcade.color.WHITE, 50)
 
         self.pointage_joueur = arcade.Text(f"Points du joueur: {self.joueur_score}", 75, 100, arcade.color.GOLD, 30)
         self.pointage_ordinateur = \
@@ -109,58 +112,46 @@ class MyGame(arcade.Window):
         if self.game_state == GameState.ROUND_ACTIVE and self.player_attack in [0, 1, 2]:
             self.choix_ordinateur = random.randint(0, 2)
 
-            """if self.choix_ordinateur == 0:
-                print("ordinateur: rock")
-                self.rock_pc.center_x = 760        # a rcade.Sprite("assets/srock.png", 0.85, 760, 245)
-                self.rock_pc.center_y = 245
-                #if self.game_state == GameState.ROUND_DONE:
-                    #self.roche_list.remove(self.rock)
-
-            elif self.choix_ordinateur == 1:
-                print("ordinateur: paper")
-                self.paper_pc.center_x = 760
-                self.paper_pc.center_y = 233  # = arcade.Sprite("assets/spaper.png", 0.85, 760, 233)
-                #if self.game_state == GameState.ROUND_DONE:
-                    #self.papier_list.remove(self.paper)
-
-            elif self.choix_ordinateur == 2:
-                print("ordinateur: cissors")
-                self.cissors_pc.center_x = 750
-                self.cissors_pc.center_y = 235        # = arcade.Sprite("assets/scissors.png", 0.75, 750, 235)
-                #if self.game_state == GameState.ROUND_DONE:
-                    #self.ciseau_list.remove(self.cissors)"""
-
             if self.choix_ordinateur == 0 and self.player_attack == 0:
+                self.lead = 2
                 print("tie")
 
             elif self.choix_ordinateur == 0 and self.player_attack == 1:
                 self.joueur_score += 1
+                self.lead = 0
                 print("win")
 
             elif self.choix_ordinateur == 0 and self.player_attack == 2:
                 self.ordinateur_score += 1
+                self.lead = 1
                 print("loss")
 
             elif self.choix_ordinateur == 1 and self.player_attack == 0:
+                self.lead = 1
                 self.ordinateur_score += 1
                 print("loss")
 
             elif self.choix_ordinateur == 1 and self.player_attack == 1:
+                self.lead = 2
                 print("tie")
 
             elif self.choix_ordinateur == 1 and self.player_attack == 2:
+                self.lead = 0
                 self.joueur_score += 1
                 print("win")
 
             elif self.choix_ordinateur == 2 and self.player_attack == 0:
+                self.lead = 0
                 self.joueur_score += 1
                 print("win")
 
             elif self.choix_ordinateur == 2 and self.player_attack == 1:
+                self.lead = 1
                 self.ordinateur_score += 1
                 print("loss")
 
             elif self.choix_ordinateur == 2 and self.player_attack == 2:
+                self.lead = 2
                 print("tie")
 
             self.game_state = GameState.ROUND_DONE
@@ -178,66 +169,55 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.carree()
-        self.joueurs_list.draw()
 
-
-        self.titre.draw()
-        if self.game_state == GameState.NOT_STARTED:
-            self.sous_titre.draw()
-        if self.game_state == GameState.ROUND_ACTIVE:
-            self.game_on.draw()
-            self.roche_list.draw()
-            self.papier_list.draw()
-            self.ciseau_list.draw()
-        if self.game_state == GameState.ROUND_DONE:
-            # changer position sprite choix ordi et afficher.
-            if self.choix_ordinateur == 0:
-                self.rock_pc.center_x = 760
-                self.rock_pc.center_y = 245
-                self.pc_roche_list.draw()
-
-            elif self.choix_ordinateur == 1:
-                self.paper_pc.center_x = 760
-                self.paper_pc.center_x = 245
-                self.pc_papier_list.draw()
-
-            elif self.choix_ordinateur == 2:
-                self.paper_pc.center_x = 750
-                self.paper_pc.center_x = 245
-                self.pc_papier_list.draw()
-
-            # changer position sprite choix joueur et afficher
-            if self.player_attack == 0:
-                self.rock_joueur.center_x = 140
-                self.rock_joueur.center_y = 245
-                self.roche_list.draw()
-                if self.rock_joueur in self.roche_list:
-                    self.roche_list.remove(self.rock_joueur)
-            elif self.player_attack == 1:
-                self.paper_joueur.center_x = 260
-                self.paper_joueur.center_y = 235
-                self.papier_list.draw()
-                if self.paper_joueur in self.papier_list:
-                    self.papier_list.remove(self.paper_joueur)
-            elif self.player_attack == 2:
-                self.cissors_joueur.center_x = 369
-                self.cissors_joueur.center_y = 235
-                self.ciseau_list.draw()
-                if self.cissors_joueur in self.ciseau_list:
-                    self.ciseau_list.remove(self.cissors_joueur)
-
-        self.pointage_joueur.draw()
-        self.pointage_ordinateur.draw()
-        if self.game_state == GameState.GAME_OVER:
-            self.winning_text.draw()
-
-    def carree(self):
         arcade.draw_lrbt_rectangle_outline(75, 185, 175, 285, arcade.color.BLACK, 5)
         arcade.draw_lrbt_rectangle_outline(195, 305, 175, 285, arcade.color.BLACK, 5)
         arcade.draw_lrbt_rectangle_outline(315, 425, 175, 285, arcade.color.BLACK, 5)
 
         arcade.draw_lrbt_rectangle_outline(695, 805, 175, 285, arcade.color.BLACK, 5)
+
+        self.joueurs_list.draw()
+        self.titre.draw()
+        self.pointage_joueur.draw()
+        self.pointage_ordinateur.draw()
+
+        if self.game_state == GameState.NOT_STARTED:
+            self.sous_titre.draw()
+
+        if self.game_state == GameState.ROUND_ACTIVE:
+            self.roche_list.draw()
+            self.papier_list.draw()
+            self.ciseau_list.draw()
+            if self.lead == 0:
+                self.point_won.draw()
+            elif self.lead == 1:
+                self.point_loss.draw()
+            elif self.lead == 2:
+                self.egale.draw()
+
+        if self.game_state == GameState.ROUND_DONE:
+            # changer position sprite choix ordi et afficher.
+            if self.choix_ordinateur == 0:
+                self.pc_roche_list.draw()
+
+            elif self.choix_ordinateur == 1:
+                self.pc_papier_list.draw()
+
+            elif self.choix_ordinateur == 2:
+                self.pc_papier_list.draw()
+
+            # changer position sprite choix joueur et afficher
+            if self.player_attack == 0:
+                self.roche_list.draw()
+
+            elif self.player_attack == 1:
+                self.papier_list.draw()
+
+            elif self.player_attack == 2:
+                self.ciseau_list.draw()
+
+        if self.game_state == GameState.GAME_OVER:
+            self.winning_text.draw()
 
 
 def main():
@@ -247,50 +227,3 @@ def main():
 
 
 main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
