@@ -198,44 +198,31 @@ class MyGame(arcade.Window):
                 self.egale.draw()
 
         if self.game_state == GameState.ROUND_DONE:
-            if self.choix_ordinateur == 0:
-                self.pc_roche_list.draw()
-
-            elif self.choix_ordinateur == 1:
-                self.pc_papier_list.draw()
-
-            elif self.choix_ordinateur == 2:
-                self.pc_ciseau_list.draw()
-
-            if self.player_attack == 0:
-                self.roche_list.draw()
-
-            elif self.player_attack == 1:
-                self.papier_list.draw()
-
-            elif self.player_attack == 2:
-                self.ciseau_list.draw()
+            self.draw_choix()
 
         if self.game_state == GameState.GAME_OVER:
             self.winning_text.draw()
+            self.draw_choix()
 
-def de             if self.choix_ordinateur == 0:
-                self.pc_roche_list.draw()
+    def draw_choix(self):
+        if self.choix_ordinateur == 0:
+            self.pc_roche_list.draw()
 
-            elif self.choix_ordinateur == 1:
-                self.pc_papier_list.draw()
+        elif self.choix_ordinateur == 1:
+            self.pc_papier_list.draw()
 
-            elif self.choix_ordinateur == 2:
-                self.pc_ciseau_list.draw()
+        elif self.choix_ordinateur == 2:
+            self.pc_ciseau_list.draw()
 
-            if self.player_attack == 0:
-                self.roche_list.draw()
+        if self.player_attack == 0:
+            self.roche_list.draw()
 
-            elif self.player_attack == 1:
-                self.papier_list.draw()
+        elif self.player_attack == 1:
+            self.papier_list.draw()
 
-            elif self.player_attack == 2:
-                self.ciseau_list.draw()
+        elif self.player_attack == 2:
+            self.ciseau_list.draw()
+
 
 def main():
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Jeu roche papier ciseau")
